@@ -10,7 +10,7 @@ var spotify = require("spotify");
 	//Passing the keys to the Twitter API
 	var tweets = new Twitter(keys);
 
-//Possible user inputs
+//Handling possible user inputs
 var command = process.argv[2].toLowerCase();
 
 switch(command){
