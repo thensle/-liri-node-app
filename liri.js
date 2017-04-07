@@ -66,8 +66,17 @@ function spotifySong(){
 	spotify.search({type:'track', query: title}, function(error, music){
 		if(error){
 			console.log(error);
+			return;
 		} else {
-			console.log(music);
+			var artist = music.tracks.items[0].artists[0].name;
+			var album = music.tracks.items[0].album.name;
+			var preview = music.tracks.items[0].preview_url;
+			var songName = music.tracks.items[0].name;
+
+			console.log("\nSong: " + songName);
+			console.log("Artist: " + artist);
+			console.log("Album: " + album);
+			console.log("\nPreview song here: \n" + preview);
 		};
 	});
 
