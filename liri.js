@@ -19,7 +19,7 @@ doIt(command);
 function doIt(command, title){
 	switch(command){
 	case "my-tweets":
-		myFavTweets();
+		myFavTweets(title);
 		break;
 	case "spotify-this-song":
 		spotifySong(title);
@@ -37,8 +37,10 @@ function doIt(command, title){
 
 
 //Grab Tweets
-function myFavTweets(){
+function myFavTweets(title){
 	tweets.get('favorites/list', function(error, tweets, response) {
+		var output = "";
+
 		if(error){
 			console.log(error);
 	  	} else {
@@ -52,9 +54,11 @@ function myFavTweets(){
 	  		};
 
 	  	  	for (var i = 0; i < availTweets; i++){
-	  	  		console.log('\n' + tweets[i].created_at);
-	  	  		console.log(tweets[i].text + '\n');
+	  	  		output = output + '\n' + tweets[i].created_at + '\n' + tweets[i].text + '\n';
 	  	  	};
+
+	  	  	console.log(output);
+	  	  	writeFS(output);
 		 }; 
 	});
 };
@@ -74,10 +78,11 @@ function spotifySong(title){
 				var preview = music.tracks.items[0].preview_url;
 				var songName = music.tracks.items[0].name;
 
-				console.log("\nSong: " + songName);
-				console.log("Artist: " + artist);
-				console.log("Album: " + album);
-				console.log("\nPreview song here: \n" + preview);
+				var output = "\nSong: " + songName + "\nArtist: " + artist + "\nAlbum: " 
+					+ album + "\n\nPreview song here: \n" + preview;
+
+				console.log(output);
+				writeFS(output);
 			};
 		});
 	};
@@ -105,20 +110,21 @@ function findMovie(title){
 				var rottenRating = JSON.parse(body).Ratings[1].Value;
 				var rottenURL = "blah";
 
-				console.log("\nMovie Title: " + movieTitle);
-				console.log("Year Released: " + year);
-				console.log("Country Filmed: " + country);
-				console.log("Languages Released In: " + language);
-				console.log("Actors: " + actors);
-				console.log("\nPlot: " + plot);
-				console.log("\nIMDB Rating: " + imdbRating);
-				console.log("Rotten Tomatoes Rating: " + rottenRating);
-				console.log("Rotten Tomatoes URL: " + rottenURL);
+				var output = "\nMovie Title: " + movieTitle + "\nYear Released: " 
+					+ year + "\nCountry Filmed: " + country + "\nLanguages Released In: "
+					 + language + "\nActors: " + actors + "\n\nPlot: " + plot + "\n\nIMDB Rating: " 
+					 + imdbRating + "\nRotten Tomatoes Rating: " + rottenRating + "\nRotten Tomatoes URL: " 
+					 + rottenURL;
+
+				console.log(output);
+				writeFS(output);
+
 			};
 		});
 	};
 };
 
+//Creating the "do-what-it-says" function
 function readFS(){
 	fs.readFile("random.txt", "utf8", function(error, data){
 		if (error){
@@ -137,7 +143,6 @@ function processInput(title){
 	if(title != undefined){
 		return title;
 	} else {
-	
 		if(process.argv.length > 4){
 			console.log("\nOops - try to provide the title in one string, please!");
 			return;
@@ -162,4 +167,15 @@ function processInput(title){
 	};
 			
 	
+};
+
+function writeFS(output){
+	fs.appendFile("log.txt", "[" + output + "],", function(error){
+		if (error){
+			console.log(error);
+		} else {
+			console.log("\n\nYour results have been written to a file!");
+		};
+
+	});
 };
